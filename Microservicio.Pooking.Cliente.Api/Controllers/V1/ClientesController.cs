@@ -29,29 +29,8 @@ public class ClientesController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObtenerPorGuid(Guid guidCliente, CancellationToken cancellationToken)
     {
-        try
-        {
-            var result = await _clienteService.ObtenerPorGuidAsync(guidCliente, cancellationToken);
-
-            if (result is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Cliente no encontrado. La consulta llegó al servicio, pero no existe ese GUID."
-                });
-            }
-
-            return Ok(ApiResponse<ClienteResponse>.Ok(result, "Consulta exitosa."));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                mensaje = "Error interno al consultar el cliente.",
-                error = ex.Message,
-                detalle = ex.InnerException?.Message
-            });
-        }
+        var result = await _clienteService.ObtenerPorGuidAsync(guidCliente, cancellationToken);
+        return Ok(ApiResponse<ClienteResponse>.Ok(result, "Consulta exitosa."));
     }
 
     /// <summary>Obtiene el cliente vinculado a un UsuarioGuidRef del dominio Auth.</summary>
@@ -148,5 +127,36 @@ public class ClientesController : ControllerBase
     {
         await _clienteService.CambiarEstadoAsync(guidCliente, nuevoEstado, cancellationToken);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Endpoint temporal para verificar conexión con la base de datos.
+    /// </summary>
+    [HttpGet("diagnostico/db")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ProbarConexionDb(
+        [FromServices] BookingDbContext context,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var puedeConectar = await context.Database.CanConnectAsync(cancellationToken);
+
+            return Ok(new
+            {
+                mensaje = "Prueba de conexión ejecutada.",
+                puedeConectar,
+                proveedor = context.Database.ProviderName
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                mensaje = "Error al conectar con la base de datos.",
+                error = ex.Message,
+                detalle = ex.InnerException?.Message
+            });
+        }
     }
 }
