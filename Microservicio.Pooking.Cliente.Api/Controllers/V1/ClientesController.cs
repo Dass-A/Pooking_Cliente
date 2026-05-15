@@ -128,35 +128,4 @@ public class ClientesController : ControllerBase
         await _clienteService.CambiarEstadoAsync(guidCliente, nuevoEstado, cancellationToken);
         return NoContent();
     }
-
-    /// <summary>
-    /// Endpoint temporal para verificar conexión con la base de datos.
-    /// </summary>
-    [HttpGet("diagnostico/db")]
-    [AllowAnonymous]
-    public async Task<IActionResult> ProbarConexionDb(
-        [FromServices] Microsoft.EntityFrameworkCore.DbContext context,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var puedeConectar = await context.Database.CanConnectAsync(cancellationToken);
-
-            return Ok(new
-            {
-                mensaje = "Prueba de conexión ejecutada.",
-                puedeConectar,
-                proveedor = context.Database.ProviderName
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new
-            {
-                mensaje = "Error al conectar con la base de datos.",
-                error = ex.Message,
-                detalle = ex.InnerException?.Message
-            });
-        }
-    }
 }
