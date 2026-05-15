@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LaunchProfileName>https</LaunchProfileName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="10.0.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
+
+    <!-- =================================================================== -->
+    <!-- gRPC Client hacia Booking.Middleware                                  -->
+    <!-- Versiones alineadas con el plan v2.0:                                 -->
+    <!--   Grpc.* 2.62.0  /  Google.Protobuf 3.27.0                            -->
+    <!-- =================================================================== -->
+    <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.62.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.62.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microservicio.Pooking.Cliente.Business\Microservicio.Pooking.Cliente.Business.csproj" />
+    <ProjectReference Include="..\Microservicio.Pooking.Cliente.DataAccess\Microservicio.Pooking.Cliente.DataAccess.csproj" />
+    <ProjectReference Include="..\Microservicio.Pooking.Cliente.DataManagement\Microservicio.Pooking.Cliente.DataManagement.csproj" />
+  </ItemGroup>
+
+  <!-- =================================================================== -->
+  <!-- Contratos .proto                                                     -->
+  <!-- Cliente solo CONSUME el Middleware (regla del plan v2.0):           -->
+  <!-- ningún .proto se expone como servidor desde este microservicio.     -->
+  <!-- =================================================================== -->
+  <ItemGroup>
+    <Protobuf Include="Protos\eventos.proto" GrpcServices="Client" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Microservicio.Pooking.Cliente.Api/Microservicio.Pooking.Cliente.Api.csproj" />
+  <Project Path="Microservicio.Pooking.Cliente.Business/Microservicio.Pooking.Cliente.Business.csproj" />
+  <Project Path="Microservicio.Pooking.Cliente.DataAccess/Microservicio.Pooking.Cliente.DataAccess.csproj" />
+  <Project Path="Microservicio.Pooking.Cliente.DataManagement/Microservicio.Pooking.Cliente.DataManagement.csproj" />
+</Solution>
