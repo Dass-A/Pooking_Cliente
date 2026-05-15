@@ -45,20 +45,25 @@ var app = builder.Build();
 // Middleware global de errores — debe ser el PRIMERO
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
+// Swagger habilitado también en Azure
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Microservicio Pooking Cliente API v1");
-        options.RoutePrefix = "swagger";
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Microservicio Pooking Cliente API v1");
+    options.RoutePrefix = "swagger";
+});
+
+// Redirigir la raíz "/" hacia Swagger
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger");
+    return Task.CompletedTask;
+});
 
 app.UseHttpsRedirection();
 app.UseCors(CorsExtensions.PolicyName);
 
-// Autenticación solo si está habilitada (solo afecta REST — gRPC no se expone)
+// Autenticación solo si está habilitada
 var jwtSettings = builder.Configuration
     .GetSection(JwtSettings.SectionName)
     .Get<JwtSettings>();
