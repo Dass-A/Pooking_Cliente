@@ -29,8 +29,29 @@ public class ClientesController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObtenerPorGuid(Guid guidCliente, CancellationToken cancellationToken)
     {
-        var result = await _clienteService.ObtenerPorGuidAsync(guidCliente, cancellationToken);
-        return Ok(ApiResponse<ClienteResponse>.Ok(result, "Consulta exitosa."));
+        try
+        {
+            var result = await _clienteService.ObtenerPorGuidAsync(guidCliente, cancellationToken);
+
+            if (result is null)
+            {
+                return NotFound(new ApiErrorResponse
+                {
+                    Message = "Cliente no encontrado. La consulta llegó al servicio, pero no existe ese GUID."
+                });
+            }
+
+            return Ok(ApiResponse<ClienteResponse>.Ok(result, "Consulta exitosa."));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                mensaje = "Error interno al consultar el cliente.",
+                error = ex.Message,
+                detalle = ex.InnerException?.Message
+            });
+        }
     }
 
     /// <summary>Obtiene el cliente vinculado a un UsuarioGuidRef del dominio Auth.</summary>
