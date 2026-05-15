@@ -135,7 +135,7 @@ public class ClientesController : ControllerBase
     [HttpGet("diagnostico/db")]
     [AllowAnonymous]
     public async Task<IActionResult> ProbarConexionDb(
-        [FromServices] BookingDbContext context,
+        [FromServices] Microsoft.EntityFrameworkCore.DbContext context,
         CancellationToken cancellationToken)
     {
         try
